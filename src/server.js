@@ -24,4 +24,10 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const server = http.createServer(app);
 const wss = new WebSocketServer({server}); 
 
+function handleConnection(socket){ // 주의사항 : 괄호가 비면 안됨
+    console.log(socket)
+}
+
+wss.on("connection", handleConnection);
+
 server.listen(3000, handleListen);
