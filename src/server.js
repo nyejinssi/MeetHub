@@ -31,21 +31,27 @@ const server = http.createServer(app);
 // HTTP 서버에 연결된 WebSocket 서버 생성
 const wss = new WebSocketServer({server});
 
+function onSocketClose(){
+    console.log("Disconnected from Server ❌")
+}
+
+const sockets = []; // Fake DB
+
 // WebSocket 연결에 대한 이벤트 핸들러
 wss.on("connection", (socket)=>{
+    sockets.push(socket);
+    // 연결이 성립되었다는 로그 표시    
+    console.log("Connected to Browser ✅ ");
+    // 소켓 닫힘에 대한 이벤트 핸들러
+    socket.on("close", onSocketClose);
+    // 클라이언트로부터 수신된 메시지에 대한 이벤트 핸들러
+    socket.on("message", (message, isBinary) => {
+        sockets.forEach(aSocket=> {
+        const messageString = isBinary ? message : message.toString('utf8');
+        socket.send(messageString);
+        })});
     // 연결된 클라이언트에게 메시지 전송
     socket.send("hello"); //데이터 보내기
-
-    // 소켓 닫힘에 대한 이벤트 핸들러
-    socket.on("close", ()=> console.log("Disconnected from Server ❌"));
-
-    // 클라이언트로부터 수신된 메시지에 대한 이벤트 핸들러
-    socket.on("message", (message)=>{
-        console.log(message);
-    });
-
-    // 연결이 성립되었다는 로그 표시
-    console.log("Connected to Browser ✅ ");
 });
 
 server.listen(3000, handleListen); //서버 시작

@@ -1,19 +1,34 @@
-// 웹소켓 연결 생성
-var socket = new WebSocket(`ws://${window.location.host}`);
+const messageList = document.querySelector("ul");
+const messageForm = document.querySelector("form");
+const socket = new WebSocket(`ws://${window.location.host}`);// 웹소켓 연결 생성
 
-// 소켓이 연결되면 발생하는 이벤트 핸들러
-socket.addEventListener("open", () => {//socket이 connection을 open했을 때
+function handleOpen(){
     console.log("Connected to Server ✅ ");
-})
-// 서버로부터 메시지를 수신하면 발생하는 이벤트 핸들러
-socket.addEventListener("message", (message) => {
-    console.log("New Message: ", message.data );
-});
-// 소켓이 닫히면 발생하는 이벤트 핸들러
-socket.addEventListener("close", () => {
+}
+function handleClose(){
     console.log("Disconnected from Server ❌");
+}
+// 소켓이 연결되면 발생하는 이벤트 핸들러
+socket.addEventListener("open", handleOpen);
+// 서버로부터 메시지를 수신하면 발생하는 이벤트 핸들러
+
+socket.addEventListener("message", async (message) => {
+    if (typeof message.data === 'string') {
+        console.log(`New message :`, message.data);
+        } else {
+        const messageText = await message.data.text();
+        console.log(messageText);
+    }
 });
-// 10초 후에 "hello from the browser" 메시지를 서버로 전송
-setTimeout(() => {
-    socket.send("hello from the browser");
-}, 10000); 
+
+// 소켓이 닫히면 발생하는 이벤트 핸들러
+socket.addEventListener("close", handleClose);
+
+function handleSubmit(event) {
+    event.preventDefault();
+    const input = messageForm.querySelector("input");
+    socket.send(input.value);
+    input.value ="";
+}
+
+messageForm.addEventListener("submit", handleSubmit);
