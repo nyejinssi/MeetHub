@@ -10,9 +10,12 @@ html(lang="en")
         header
             h1 MeetHub
         main 
+            form#nick
+                input(type="text", placeholder="닉네임을 선택하세요", required)
+                button Save
             ul 
-            form
-                input(type="text", placeholder="write a msg", required)
+            form#message
+                input(type="text", placeholder="메세지를 작성하세요", required)
                 button Send
             script(src='js/index.js')     
         

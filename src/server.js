@@ -46,12 +46,12 @@ wss.on("connection", (socket)=>{
     socket.on("close", onSocketClose);
     // 클라이언트로부터 수신된 메시지에 대한 이벤트 핸들러
     socket.on("message", (message, isBinary) => {
-        sockets.forEach(aSocket=> {
+        sockets.forEach((aSocket)=> {
         const messageString = isBinary ? message : message.toString('utf8');
-        socket.send(messageString);
+        aSocket.send(messageString);
         })});
     // 연결된 클라이언트에게 메시지 전송
-    socket.send("hello"); //데이터 보내기
 });
 
 server.listen(3000, handleListen); //서버 시작
+
